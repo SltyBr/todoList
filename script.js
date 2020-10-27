@@ -6,41 +6,45 @@ const  todoControl = document.querySelector('.todo-control'),
     btnAddItem = document.querySelector('#id'),
     todoCompleted = document.querySelector('.todo-completed');
 
-let todoData = JSON.parse(localStorage.getItem('items')) || [];
+let todoData = JSON.parse(localStorage.getItem('items')) ||  [];
 
 
 const render = function() { 
     todoList.textContent = '';
     todoCompleted.textContent = '';
 
-    todoData.forEach(function(item){
+    todoData.forEach(function(item, index, array){
         const li = document.createElement('li');
+
         li.classList.add('todo-item');
+
         li.innerHTML = '<span class="text-todo">' + item.value + '</span>' +
         '<div class="todo-buttons">' +
             '<button class="todo-remove"></button>' +
             '<button class="todo-complete"></button>' +
         '</div>';
 
-        if (item.completed) {
-            todoCompleted.append(li);
-        } else {
-            todoList.append(li);
-        }
 
-        const todoComplete = li.querySelector('.todo-complete');
-        const todoRemove = li.querySelector('.todo-remove');
+        const isComplete =  function(){
+            (item.completed) ? todoCompleted.append(li) : todoList.append(li);};
+            isComplete(); // добавляем элемент в список в зависимости от значения completed
+
+        
+        const todoComplete = li.querySelector('.todo-complete'),
+            todoRemove = li.querySelector('.todo-remove');
 
         todoComplete.addEventListener('click', function(){
             item.completed = !item.completed;
             render();
         });
         todoRemove.addEventListener('click', function(){
-            li.remove();
-            todoData.splice(item, 1);
+            li.remove(); //удаляем элемент из вёрстки
+            delete array[index];    // удаляем элемент из массива
+            todoData = array.filter(element => element !== null); // пропускаем todoData через фильтр, убираем всё что осталось после delete
             render();
         });
     });
+
     localStorage.setItem('items', JSON.stringify(todoData));
 };
 
@@ -48,7 +52,7 @@ const render = function() {
 todoControl.addEventListener('submit', function(event){
 
     event.preventDefault();
-    if (todoControl.querySelector('.header-input').value == ''){
+    if (headerInput.value === ''){
         return false;
     } else{
         const newTodo = {
@@ -58,9 +62,7 @@ todoControl.addEventListener('submit', function(event){
 
     todoData.push(newTodo);
     render();
-    todoControl.querySelector('.header-input').value = null;}
+    headerInput.value = null;}
 });
 
 render();
-
-
