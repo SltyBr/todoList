@@ -40,7 +40,7 @@ const render = function() {
         todoRemove.addEventListener('click', function(){
             li.remove(); //удаляем элемент из вёрстки
             delete array[index];    // удаляем элемент из массива
-            todoData = array.filter(element => element !== null); // пропускаем todoData через фильтр, убираем всё что осталось после delete
+            todoData = array.filter(element => element !== null);
             render();
         });
     });
